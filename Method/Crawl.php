@@ -7,6 +7,7 @@ use GDO\Dog\DOG_Server;
 use GDO\DB\GDT_UInt;
 use GDO\Dog\DOG_Room;
 use GDO\Core\Logger;
+use GDO\Dog\DOG_User;
 
 /**
  * Initiate a crawl.
@@ -36,13 +37,13 @@ final class Crawl extends DOG_IRCCommand
     ############
     public function dogExecute(DOG_Message $message)
     {
-        if ($message->server->tempGet('irc_crawler'))
+        if ($message->server->tempGet('irc_crawler') !== null)
         {
             $message->rply('err_dog_already_crawling', [$message->server->displayName()]);
         }
         else
         {
-            $message->server->tempSet('irc_crawler', '1');
+            $message->server->tempSet('irc_crawler', $message->user);
             $this->getConnector($message)->send("LIST");
             $message->rply('msg_dog_crawl_inited', [$message->server->displayName()]);
         }
@@ -56,14 +57,24 @@ final class Crawl extends DOG_IRCCommand
         echo $userCount."\n";
         if ($userCount >= $this->getConfigValueServer($server, 'crawl_min_users'))
         {
-            $room = DOG_Room::getOrCreate($server, $roomName, $description);
+            if (!($room = DOG_Room::getByName($server, $roomName)))
+            {
+                $room = DOG_Room::create($server, $roomName, $description);
+            }
         }
     }
     
     public function irc_323(DOG_Server $server, $endOfList)
     {
-        $server->tempUnset('irc_crawler');
-        Logger::logCron('DONE!');
+        /**
+         * @var $user DOG_User
+         */
+        if ($user = $server->tempGet('irc_crawler'))
+        {
+            Logger::logCron('DONE!');
+            $server->tempUnset('irc_crawler');
+            $user->send(t('msg_dog_crawl_done'));
+        }
     }
     
 }
