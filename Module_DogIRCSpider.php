@@ -15,4 +15,11 @@ final class Module_DogIRCSpider extends GDO_Module
     
     public function onLoadLanguage() { return $this->loadLanguage('lang/spider'); }
     
+    public function getClasses()
+    {
+        return array(
+            'GDO\\DogIRCSpider\\DOG_RoomCrawl',
+        );
+    }
+    
 }

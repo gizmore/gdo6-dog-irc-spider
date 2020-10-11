@@ -8,6 +8,7 @@ use GDO\DB\GDT_UInt;
 use GDO\Dog\DOG_Room;
 use GDO\Core\Logger;
 use GDO\Dog\DOG_User;
+use GDO\DogIRCSpider\DOG_RoomCrawl;
 
 /**
  * Initiate a crawl.
@@ -60,6 +61,7 @@ final class Crawl extends DOG_IRCCommand
             if (!($room = DOG_Room::getByName($server, $roomName)))
             {
                 $room = DOG_Room::create($server, $roomName, $description);
+                DOG_RoomCrawl::crawled($room);
             }
         }
     }
