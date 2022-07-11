@@ -12,11 +12,11 @@ use GDO\Core\GDO_Module;
  */
 final class Module_DogIRCSpider extends GDO_Module
 {
-    public function getDependencies() { return ['DogIRC']; }
+    public function getDependencies() : array { return ['DogIRC']; }
     
-    public function onLoadLanguage() { return $this->loadLanguage('lang/spider'); }
+    public function onLoadLanguage() : void { $this->loadLanguage('lang/spider'); }
     
-    public function getClasses()
+    public function getClasses() : array
     {
         return [
             DOG_RoomCrawl::class,

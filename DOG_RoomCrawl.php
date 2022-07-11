@@ -3,7 +3,7 @@ namespace GDO\DogIRCSpider;
 
 use GDO\Core\GDO;
 use GDO\Dog\GDT_Room;
-use GDO\DB\GDT_Enum;
+use GDO\Core\GDT_Enum;
 use GDO\Dog\DOG_Room;
 use GDO\Dog\DOG_Server;
 use GDO\Date\GDT_DateTime;
@@ -11,9 +11,9 @@ use GDO\Date\Time;
 
 final class DOG_RoomCrawl extends GDO
 {
-    public function gdoCached() { return false; }
+    public function gdoCached() : bool { return false; }
     
-    public function gdoColumns()
+    public function gdoColumns() : array
     {
         return [
             GDT_Room::make('crawl_room')->primary(),

@@ -4,14 +4,14 @@ namespace GDO\DogIRCSpider\Method;
 use GDO\Dog\DOG_Message;
 use GDO\DogIRC\DOG_IRCCommand;
 use GDO\Dog\DOG_Server;
-use GDO\DB\GDT_UInt;
+use GDO\Core\GDT_UInt;
 use GDO\Dog\DOG_Room;
 use GDO\Core\Logger;
 use GDO\Dog\DOG_User;
 use GDO\DogIRCSpider\DOG_RoomCrawl;
 use GDO\DogIRC\Method\Join;
 use GDO\Dog\Dog;
-use GDO\DB\GDT_Checkbox;
+use GDO\Core\GDT_Checkbox;
 
 /**
  * Initiate a crawl.
@@ -22,14 +22,14 @@ final class Crawl extends DOG_IRCCommand
     public $priority = 90;
     public $trigger = 'crawl';
     
-    public function getPermission() { return 'admin'; }
+    public function getPermission() : ?string { return 'admin'; }
     
     private $crawlMessage;
     
     ##############
     ### Method ###
     ##############
-    public function gdoParameters()
+    public function gdoParameters() : array
     {
         return [
             GDT_Checkbox::make('reset')->initial('0'),
