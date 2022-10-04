@@ -53,7 +53,7 @@ final class Crawl extends DOG_IRCCommand
     {
         if ($message->server->tempGet('irc_crawler') !== null)
         {
-            $message->rply('err_dog_already_crawling', [$message->server->displayName()]);
+            $message->rply('err_dog_already_crawling', [$message->server->renderName()]);
         }
         elseif ($reset)
         {
@@ -65,7 +65,7 @@ final class Crawl extends DOG_IRCCommand
             $this->crawlMessage = $message;
             $message->server->tempSet('irc_crawler', $message->user);
             $this->getConnector($message)->send("LIST");
-            $message->rply('msg_dog_crawl_inited', [$message->server->displayName()]);
+            $message->rply('msg_dog_crawl_inited', [$message->server->renderName()]);
         }
     }
     
@@ -123,7 +123,7 @@ final class Crawl extends DOG_IRCCommand
             $room->tempUnset('irc_crawler');
             $room->send(t('msg_crawler_joined', [
                 $room->getName(), $server->getNickname(),
-                $initiator->displayName()]));
+                $initiator->renderName()]));
             Dog::instance()->event('irc_crawler_joined', $server, $room);
         }
     }
