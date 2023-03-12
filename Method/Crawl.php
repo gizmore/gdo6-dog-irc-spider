@@ -24,7 +24,7 @@ final class Crawl extends DOG_IRCCommand
     
     public function getPermission() : ?string { return 'admin'; }
     
-    private $crawlMessage;
+    private static ?DOG_Message $CRAWL_MESSAGE;
     
     ##############
     ### Method ###
@@ -62,7 +62,7 @@ final class Crawl extends DOG_IRCCommand
         }
         else
         {
-            $this->crawlMessage = $message;
+        	self::$CRAWL_MESSAGE = $message;
             $message->server->tempSet('irc_crawler', $message->user);
             $this->getConnector($message)->send("LIST");
             $message->rply('msg_dog_crawl_inited', [$message->server->renderName()]);
@@ -81,8 +81,9 @@ final class Crawl extends DOG_IRCCommand
             {
                 if (!$server->hasRoom($room))
                 {
-                    $room->tempSet('irc_crawler', $this->crawlMessage->user);
-                    Join::make()->dogExecute($this->crawlMessage, $roomName);
+                	$msg = self::$CRAWL_MESSAGE;
+                    $room->tempSet('irc_crawler', $msg->user);
+                    Join::make()->dogExecute($msg, $roomName);
                 }
             }
         }

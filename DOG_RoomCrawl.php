@@ -3,7 +3,6 @@ namespace GDO\DogIRCSpider;
 
 use GDO\Core\GDO;
 use GDO\Dog\GDT_Room;
-use GDO\Core\GDT_Enum;
 use GDO\Dog\DOG_Room;
 use GDO\Dog\DOG_Server;
 use GDO\Date\GDT_DateTime;
