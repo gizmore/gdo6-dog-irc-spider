@@ -22,7 +22,7 @@ final class Crawl extends DOG_IRCCommand
 {
 
 	private static ?DOG_Message $CRAWL_MESSAGE;
-	public $priority = 90;
+	public int $priority = 90;
 	public $trigger = 'crawl';
 
 	public function getPermission(): ?string { return 'admin'; }
