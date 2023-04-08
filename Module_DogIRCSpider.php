@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace GDO\DogIRCSpider;
 
 use GDO\Core\GDO_Module;
@@ -6,7 +7,7 @@ use GDO\Core\GDO_Module;
 /**
  * Crawls IRC networks for channels and joins them.
  *
- * @version 6.10.4
+ * @version 7.0.3
  * @since 6.10.0
  * @author gizmore
  */

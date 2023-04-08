@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace GDO\DogIRCSpider\Method;
 
 use GDO\Core\GDT_Checkbox;
@@ -14,7 +15,7 @@ use GDO\DogIRC\Method\Join;
 use GDO\DogIRCSpider\DOG_RoomCrawl;
 
 /**
- * Initiate a crawl.
+ * Initiate an IRC Network crawl.
  *
  * @author gizmore
  */
@@ -22,14 +23,15 @@ final class Crawl extends DOG_IRCCommand
 {
 
 	private static ?DOG_Message $CRAWL_MESSAGE;
-	public int $priority = 90;
-	public $trigger = 'crawl';
-
-	public function getPermission(): ?string { return 'admin'; }
 
 	##############
 	### Method ###
 	##############
+
+	public int $priority = 90;
+
+	public function getPermission(): ?string { return 'admin'; }
+
 
 	public function gdoParameters(): array
 	{
@@ -41,7 +43,7 @@ final class Crawl extends DOG_IRCCommand
 	##############
 	### Config ###
 	##############
-	public function getConfigServer()
+	protected function getConfigServer()
 	{
 		return [
 			GDT_UInt::make('crawl_min_users')->notNull()->initial('5'),
@@ -52,7 +54,7 @@ final class Crawl extends DOG_IRCCommand
 	### Exec ###
 	############
 
-	public function irc_322(DOG_Server $server, $me, $userName, $roomName, $userCount, $description)
+	public function irc_322(DOG_Server $server, $me, $userName, $roomName, $userCount, $description): void
 	{
 		$room = DOG_Room::getOrCreate($server, $roomName, $description);
 		if ($userCount >= $this->getConfigValueServer($server, 'crawl_min_users'))
@@ -73,7 +75,7 @@ final class Crawl extends DOG_IRCCommand
 	### Events ###
 	##############
 
-	public function dogExecute(DOG_Message $message, $reset = false)
+	public function dogExecute(DOG_Message $message, $reset = false): void
 	{
 		if ($message->server->tempGet('irc_crawler') !== null)
 		{
@@ -82,7 +84,7 @@ final class Crawl extends DOG_IRCCommand
 		elseif ($reset)
 		{
 			DOG_RoomCrawl::truncateServer($message->server);
-			return $message->rply('msg_crawler_cleared');
+			$message->rply('msg_crawler_cleared');
 		}
 		else
 		{
@@ -96,14 +98,11 @@ final class Crawl extends DOG_IRCCommand
 	/**
 	 * End of channel list.
 	 * Reset temp vars.
-	 *
-	 * @param DOG_Server $server
-	 * @param string $endOfList
 	 */
-	public function irc_323(DOG_Server $server, $endOfList)
+	public function irc_323(DOG_Server $server, DOG_User $me, string $endOfList): void
 	{
 		/**
-		 * @var $user DOG_User
+		 * @var DOG_User $user
 		 */
 		if ($user = $server->tempGet('irc_crawler'))
 		{
@@ -116,14 +115,10 @@ final class Crawl extends DOG_IRCCommand
 	/**
 	 * If we join a channel, test if channel was discovered by crawler.
 	 * If discovered, send a welcome message.
-	 *
-	 * @param DOG_Server $server
-	 * @param DOG_User $user
-	 * @param DOG_Room $room
 	 */
-	public function dog_join(DOG_Server $server, DOG_User $user, DOG_Room $room)
+	public function dog_join(DOG_Server $server, DOG_User $user, DOG_Room $room): void
 	{
-		/** @var $initiator DOG_User * */
+		/** @var DOG_User $initiator * */
 		if ($initiator = $room->tempGet('irc_crawler'))
 		{
 			DOG_RoomCrawl::crawled($room);
@@ -137,12 +132,8 @@ final class Crawl extends DOG_IRCCommand
 
 	/**
 	 * If dog get's kicked of a room, mark his crawl status
-	 *
-	 * @param DOG_Server $server
-	 * @param DOG_User $user
-	 * @param DOG_Room $room
 	 */
-	public function dog_kicked(DOG_Server $server, DOG_User $user, DOG_Room $room)
+	public function dog_kicked(DOG_Server $server, DOG_User $user, DOG_Room $room): void
 	{
 		DOG_RoomCrawl::kicked($room);
 	}
