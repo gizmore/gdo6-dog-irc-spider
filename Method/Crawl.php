@@ -43,7 +43,7 @@ final class Crawl extends DOG_IRCCommand
 	##############
 	### Config ###
 	##############
-	protected function getConfigServer()
+	protected function getConfigServer(): array
 	{
 		return [
 			GDT_UInt::make('crawl_min_users')->notNull()->initial('5'),
@@ -54,7 +54,7 @@ final class Crawl extends DOG_IRCCommand
 	### Exec ###
 	############
 
-	public function irc_322(DOG_Server $server, $me, $userName, $roomName, $userCount, $description): void
+	public function irc_322(DOG_Server $server, DOG_User $me, string $userName, string $roomName, int $userCount, ?string $description): void
 	{
 		$room = DOG_Room::getOrCreate($server, $roomName, $description);
 		if ($userCount >= $this->getConfigValueServer($server, 'crawl_min_users'))
